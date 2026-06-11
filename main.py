@@ -1,3 +1,5 @@
+pip install -r requirements.txt
+
 import subprocess
 import sys
 import time
