@@ -2,13 +2,12 @@
 
 Projeto acadêmico desenvolvido para a disciplina de Tópicos de Big Data em Python.
 
-O objetivo do projeto é simular a operação de uma empresa de médio porte do setor de perfumaria e cosméticos, utilizando técnicas de análise de dados, Business Intelligence e Machine Learning para geração de insights estratégicos.
+O objetivo do projeto é demonstrar a operação de uma empresa de médio porte do setor de perfumaria e cosméticos, chamada Tressanza, com quem firmamos uma parceria, utilizando técnicas de análise de dados, Business Intelligence e Machine Learning para geração de insights estratégicos.
 
 ---
 
 # Objetivos
 
-- Simular uma base de dados realista
 - Analisar indicadores de desempenho
 - Identificar produtos mais vendidos
 - Avaliar satisfação dos clientes
@@ -64,8 +63,8 @@ tressenza-bigdata/
 
 O sistema gera automaticamente:
 
-- 50.000 vendas simuladas
-- Clientes fictícios
+- 50.000 vendas imuladas
+- Clientes
 - Produtos de cosméticos
 - Categorias
 - Métodos de pagamento
@@ -155,7 +154,7 @@ graficos/previsao_5_anos.png
 
 ---
 
-# Indicadores Simulados
+# Desempenho
 
 | Indicador | Valor Médio |
 |------------|------------|
@@ -174,10 +173,9 @@ graficos/previsao_5_anos.png
 - Identificação dos produtos mais lucrativos
 - Apoio à tomada de decisão
 - Planejamento de crescimento
-- Simulação de ambiente corporativo real
+- Ambiente corporativo real
 
 ---
 
-# Autor
 
 Projeto desenvolvido para fins acadêmicos na disciplina de Tópicos de Big Data em Python.
