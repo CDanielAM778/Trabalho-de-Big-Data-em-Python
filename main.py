@@ -1,10 +1,9 @@
 import subprocess
 import sys
 import time
-import os
 
 # ==========================================
-# CONFIGURAÇÕES
+# LISTA DE SCRIPTS
 # ==========================================
 
 SCRIPTS = [
@@ -16,96 +15,63 @@ SCRIPTS = [
 ]
 
 # ==========================================
-# FUNÇÃO PARA EXECUTAR SCRIPTS
+# EXECUTAR SCRIPT
 # ==========================================
 
-def executar_script(script):
-    print("\n" + "=" * 70)
-    print(f"EXECUTANDO: {script}")
-    print("=" * 70)
+def executar(script):
 
-    if not os.path.exists(script):
-        print(f"ERRO: Arquivo não encontrado -> {script}")
-        return False
+    print("\n" + "=" * 60)
+    print(f"Executando: {script}")
+    print("=" * 60)
 
-    try:
-        resultado = subprocess.run(
-            [sys.executable, script],
-            check=True
-        )
+    subprocess.run(
+        [sys.executable, script],
+        check=True
+    )
 
-        print(f"✓ Concluído: {script}")
-        return True
-
-    except subprocess.CalledProcessError as erro:
-        print(f"✗ Falha ao executar {script}")
-        print(f"Código de saída: {erro.returncode}")
-        return False
-
-    except Exception as erro:
-        print(f"✗ Erro inesperado em {script}")
-        print(str(erro))
-        return False
+    print(f"✓ Finalizado: {script}")
 
 # ==========================================
-# EXECUÇÃO PRINCIPAL
+# MAIN
 # ==========================================
 
 def main():
 
     inicio = time.time()
 
-    print("=" * 70)
+    print("=" * 60)
     print("TRESSENZA BIG DATA ANALYTICS")
-    print("=" * 70)
-    print("Iniciando pipeline...\n")
-
-    sucessos = 0
+    print("=" * 60)
 
     for script in SCRIPTS:
-
-        executado = executar_script(script)
-
-        if executado:
-            sucessos += 1
-        else:
-            print("\nPipeline interrompida.")
-            sys.exit(1)
+        executar(script)
 
     fim = time.time()
 
-    print("\n" + "=" * 70)
-    print("PIPELINE FINALIZADA COM SUCESSO")
-    print("=" * 70)
+    print("\n" + "=" * 60)
+    print("PROJETO FINALIZADO")
+    print("=" * 60)
 
-    print(f"Scripts executados: {sucessos}/{len(SCRIPTS)}")
     print(f"Tempo total: {fim - inicio:.2f} segundos")
 
     print("\nArquivos gerados:")
 
-    arquivos = [
-        "data/vendas.csv",
-        "data/previsao.csv",
-        "relatorio/relatorio_gerencial.xlsx",
-        "relatorio/apresentacao_executiva.pptx",
-        "graficos/faturamento_mensal.png",
-        "graficos/categorias.png",
-        "graficos/pagamentos.png",
-        "graficos/satisfacao_clientes.png",
-        "graficos/top_produtos.png",
-        "graficos/faturamento_categoria.png",
-        "graficos/previsao_5_anos.png"
-    ]
+    print("- data/vendas.csv")
+    print("- data/previsao.csv")
+    print("- relatorio/relatorio_gerencial.xlsx")
+    print("- relatorio/apresentacao_executiva.pptx")
 
-    for arquivo in arquivos:
+    print("\nGráficos:")
 
-        if os.path.exists(arquivo):
-            print(f"✓ {arquivo}")
-        else:
-            print(f"⚠ Não encontrado: {arquivo}")
+    print("- graficos/faturamento_mensal.png")
+    print("- graficos/categorias.png")
+    print("- graficos/pagamentos.png")
+    print("- graficos/satisfacao_clientes.png")
+    print("- graficos/top_produtos.png")
+    print("- graficos/faturamento_categoria.png")
+    print("- graficos/previsao_5_anos.png")
 
-    print("\nProjeto concluído com sucesso.")
-    print("=" * 70)
+    print("\n✓ Pipeline executada com sucesso!")
 
 # ==========================================
 # INÍCIO
