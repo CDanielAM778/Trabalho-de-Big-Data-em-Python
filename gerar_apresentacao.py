@@ -1,3 +1,5 @@
+pip install -r requirements.txt
+
 from pptx import Presentation
 from pptx.util import Inches
 import pandas as pd
