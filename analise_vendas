@@ -1,0 +1,189 @@
+import pandas as pd
+import os
+
+# ==========================================
+# VERIFICAÇÃO DE ARQUIVOS
+# ==========================================
+
+ARQUIVO_VENDAS = "data/vendas.csv"
+
+if not os.path.exists(ARQUIVO_VENDAS):
+    print("Arquivo vendas.csv não encontrado.")
+    print("Execute primeiro gerar_dados.py")
+    exit()
+
+# ==========================================
+# LEITURA DOS DADOS
+# ==========================================
+
+df = pd.read_csv(ARQUIVO_VENDAS)
+
+# ==========================================
+# CONVERSÕES
+# ==========================================
+
+df["data"] = pd.to_datetime(df["data"])
+
+# ==========================================
+# KPIs PRINCIPAIS
+# ==========================================
+
+faturamento_total = df["valor_total"].sum()
+
+total_vendas = len(df)
+
+ticket_medio = faturamento_total / total_vendas
+
+quantidade_produtos = df["quantidade"].sum()
+
+avaliacao_media = df["avaliacao"].mean()
+
+# ==========================================
+# PRODUTO MAIS VENDIDO
+# ==========================================
+
+produto_mais_vendido = (
+    df.groupby("produto")["quantidade"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+# ==========================================
+# CATEGORIA MAIS VENDIDA
+# ==========================================
+
+categoria_mais_vendida = (
+    df.groupby("categoria")["quantidade"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+# ==========================================
+# FATURAMENTO POR CATEGORIA
+# ==========================================
+
+faturamento_categoria = (
+    df.groupby("categoria")["valor_total"]
+    .sum()
+    .sort_values(ascending=False)
+)
+
+# ==========================================
+# FATURAMENTO MENSAL
+# ==========================================
+
+df["ano_mes"] = df["data"].dt.to_period("M")
+
+faturamento_mensal = (
+    df.groupby("ano_mes")["valor_total"]
+    .sum()
+)
+
+# ==========================================
+# FORMA DE PAGAMENTO
+# ==========================================
+
+formas_pagamento = (
+    df["forma_pagamento"]
+    .value_counts()
+)
+
+# ==========================================
+# RELATÓRIO EXECUTIVO
+# ==========================================
+
+resumo = pd.DataFrame({
+    "Indicador": [
+        "Faturamento Total",
+        "Quantidade de Vendas",
+        "Ticket Médio",
+        "Produtos Vendidos",
+        "Avaliação Média"
+    ],
+    "Valor": [
+        round(faturamento_total, 2),
+        total_vendas,
+        round(ticket_medio, 2),
+        quantidade_produtos,
+        round(avaliacao_media, 2)
+    ]
+})
+
+# ==========================================
+# EXPORTAÇÃO PARA EXCEL
+# ==========================================
+
+os.makedirs("relatorio", exist_ok=True)
+
+arquivo_excel = "relatorio/relatorio_gerencial.xlsx"
+
+with pd.ExcelWriter(
+    arquivo_excel,
+    engine="openpyxl"
+) as writer:
+
+    resumo.to_excel(
+        writer,
+        sheet_name="Resumo",
+        index=False
+    )
+
+    produto_mais_vendido.to_frame(
+        "Quantidade"
+    ).to_excel(
+        writer,
+        sheet_name="Produtos"
+    )
+
+    categoria_mais_vendida.to_frame(
+        "Quantidade"
+    ).to_excel(
+        writer,
+        sheet_name="Categorias"
+    )
+
+    faturamento_categoria.to_frame(
+        "Faturamento"
+    ).to_excel(
+        writer,
+        sheet_name="Faturamento_Categoria"
+    )
+
+    faturamento_mensal.to_frame(
+        "Faturamento"
+    ).to_excel(
+        writer,
+        sheet_name="Faturamento_Mensal"
+    )
+
+    formas_pagamento.to_frame(
+        "Quantidade"
+    ).to_excel(
+        writer,
+        sheet_name="Pagamentos"
+    )
+
+# ==========================================
+# IMPRESSÃO DOS RESULTADOS
+# ==========================================
+
+print("=" * 60)
+print("ANÁLISE DE VENDAS")
+print("=" * 60)
+
+print(f"Faturamento Total: R$ {faturamento_total:,.2f}")
+print(f"Total de Vendas: {total_vendas:,}")
+print(f"Ticket Médio: R$ {ticket_medio:,.2f}")
+print(f"Produtos Vendidos: {quantidade_produtos:,}")
+print(f"Avaliação Média: {avaliacao_media:.2f}/5")
+
+print("\nTOP 5 PRODUTOS")
+print(produto_mais_vendido.head())
+
+print("\nTOP 5 CATEGORIAS")
+print(categoria_mais_vendida.head())
+
+print("\nRelatório salvo em:")
+print(arquivo_excel)
+
+print("=" * 60)
