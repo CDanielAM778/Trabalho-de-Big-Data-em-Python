@@ -1,73 +1,115 @@
 import subprocess
 import sys
 import time
+import os
 
 # ==========================================
-# FUNÇÃO EXECUTORA
+# CONFIGURAÇÕES
 # ==========================================
 
-def executar(script):
+SCRIPTS = [
+    "src/gerar_dados.py",
+    "src/analise_vendas.py",
+    "src/dashboard.py",
+    "src/previsao.py",
+    "src/gerar_apresentacao.py"
+]
+
+# ==========================================
+# FUNÇÃO PARA EXECUTAR SCRIPTS
+# ==========================================
+
+def executar_script(script):
     print("\n" + "=" * 70)
     print(f"EXECUTANDO: {script}")
     print("=" * 70)
 
-    resultado = subprocess.run(
-        [sys.executable, script]
-    )
+    if not os.path.exists(script):
+        print(f"ERRO: Arquivo não encontrado -> {script}")
+        return False
 
-    if resultado.returncode != 0:
-        print(f"\nERRO ao executar {script}")
-        sys.exit(1)
+    try:
+        resultado = subprocess.run(
+            [sys.executable, script],
+            check=True
+        )
 
-    print(f"\n✓ {script} concluído com sucesso.")
+        print(f"✓ Concluído: {script}")
+        return True
+
+    except subprocess.CalledProcessError as erro:
+        print(f"✗ Falha ao executar {script}")
+        print(f"Código de saída: {erro.returncode}")
+        return False
+
+    except Exception as erro:
+        print(f"✗ Erro inesperado em {script}")
+        print(str(erro))
+        return False
 
 # ==========================================
-# PIPELINE
+# EXECUÇÃO PRINCIPAL
 # ==========================================
 
-inicio = time.time()
+def main():
 
-scripts = [
-    "src/gerar_dados.py",
-    "src/analise_vendas.py",
-    "src/dashboard.py",
-    "src/previsao.py"
-]
+    inicio = time.time()
 
-print("=" * 70)
-print("TRESSENZA BIG DATA ANALYTICS")
-print("=" * 70)
+    print("=" * 70)
+    print("TRESSENZA BIG DATA ANALYTICS")
+    print("=" * 70)
+    print("Iniciando pipeline...\n")
 
-for script in scripts:
-    executar(script)
+    sucessos = 0
 
-fim = time.time()
+    for script in SCRIPTS:
 
-print("\n" + "=" * 70)
-print("PIPELINE FINALIZADA")
-print("=" * 70)
+        executado = executar_script(script)
 
-print(
-    f"Tempo total: {(fim - inicio):.2f} segundos"
-)
+        if executado:
+            sucessos += 1
+        else:
+            print("\nPipeline interrompida.")
+            sys.exit(1)
 
-print("\nArquivos gerados:")
+    fim = time.time()
 
-arquivos = [
-    "data/vendas.csv",
-    "data/previsao.csv",
-    "relatorio/relatorio_gerencial.xlsx",
-    "graficos/faturamento_mensal.png",
-    "graficos/categorias.png",
-    "graficos/pagamentos.png",
-    "graficos/satisfacao_clientes.png",
-    "graficos/top_produtos.png",
-    "graficos/faturamento_categoria.png",
-    "graficos/previsao_5_anos.png"
-]
+    print("\n" + "=" * 70)
+    print("PIPELINE FINALIZADA COM SUCESSO")
+    print("=" * 70)
 
-for arquivo in arquivos:
-    print(f"✓ {arquivo}")
+    print(f"Scripts executados: {sucessos}/{len(SCRIPTS)}")
+    print(f"Tempo total: {fim - inicio:.2f} segundos")
 
-print("\nProjeto concluído com sucesso.")
-print("=" * 70)
+    print("\nArquivos gerados:")
+
+    arquivos = [
+        "data/vendas.csv",
+        "data/previsao.csv",
+        "relatorio/relatorio_gerencial.xlsx",
+        "relatorio/apresentacao_executiva.pptx",
+        "graficos/faturamento_mensal.png",
+        "graficos/categorias.png",
+        "graficos/pagamentos.png",
+        "graficos/satisfacao_clientes.png",
+        "graficos/top_produtos.png",
+        "graficos/faturamento_categoria.png",
+        "graficos/previsao_5_anos.png"
+    ]
+
+    for arquivo in arquivos:
+
+        if os.path.exists(arquivo):
+            print(f"✓ {arquivo}")
+        else:
+            print(f"⚠ Não encontrado: {arquivo}")
+
+    print("\nProjeto concluído com sucesso.")
+    print("=" * 70)
+
+# ==========================================
+# INÍCIO
+# ==========================================
+
+if __name__ == "__main__":
+    main()
